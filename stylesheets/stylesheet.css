@@ -87,7 +87,7 @@ h4 a:hover {
 
 h4 {
   font-size: 21px;
-  color: #222222;
+  color: #222222 !important;
 }
 
 h5 {
