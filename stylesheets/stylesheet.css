@@ -147,13 +147,14 @@ img {
   max-width: 739px;
   padding: 5px;
   margin: 10px 0 10px 0;
+/*
   border: 1px solid #ebebeb;
-
   box-shadow: 0 0 5px #ebebeb;
   -webkit-box-shadow: 0 0 5px #ebebeb;
   -moz-box-shadow: 0 0 5px #ebebeb;
   -o-box-shadow: 0 0 5px #ebebeb;
   -ms-box-shadow: 0 0 5px #ebebeb;
+*/
 }
 
 p img {
@@ -307,10 +308,10 @@ Full-Width Styles
 
 #project_title {
   margin: 0;
-/*  color: #fff; */
+  color: #fff;
   font-size: 42px;
   font-weight: 700;
-/*  text-shadow: #111 0px 0px 10px; */
+  text-shadow: #111 0px 0px 10px;
 }
 
 #project_tagline {
