@@ -378,6 +378,9 @@ Full-Width Styles
 
 #footer_wrap {
   background: #212121;
+}
+
+#footer_wrap a {
   color: white;
 }
 
