@@ -141,6 +141,10 @@ strong {
   font-weight: bold;
 }
 
+#project_title img {
+  left: -17px;
+}
+
 img {
   position: relative;
   margin: 0 auto;
