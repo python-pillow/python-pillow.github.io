@@ -1,4 +1,4 @@
 Pillow Website
 ==============
 
-http://python-pillow.org
+https://python-pillow.org
