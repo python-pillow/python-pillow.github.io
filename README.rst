@@ -1,4 +1,4 @@
 Pillow Website
 ==============
 
-http://python-pillow.github.io
+https://python-pillow.org
