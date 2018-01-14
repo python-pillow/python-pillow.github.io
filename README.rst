@@ -1,4 +1,4 @@
-Pillow Website
-==============
+Old Pillow Website
+==================
 
-http://python-pillow.github.io
+Moved to https://github.com/python-pillow/python-pillow.org
