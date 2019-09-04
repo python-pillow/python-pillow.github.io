@@ -283,19 +283,32 @@ Full-Width Styles
   margin: 0 auto;
 }
 
-#forkme_banner {
-  display: block;
+.banners {
   position: absolute;
-  top:0;
+  top: 0;
   right: 10px;
   z-index: 10;
-  padding: 10px 50px 10px 10px;
-  color: #fff;
-  background: url('../images/blacktocat.png') #0090ff no-repeat 95% 50%;
+}
+.banners a {
+  display: inline-block;
   font-weight: 700;
+  padding: 10px 50px 10px 10px;
   box-shadow: 0 0 10px rgba(0,0,0,.5);
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
+  background-repeat: no-repeat;
+  background-position: 95% 50%;
+}
+#forkme_banner {
+  color: #fff;
+  background-image: url('../images/blacktocat.png');
+  background-color: #0090ff;
+}
+#enterprise_banner {
+  color: #000;
+  background-image: url('../images/Tidelift-shorthand-mark_black.png');
+  background-color: #fff;
+  background-size: 30px;
 }
 
 #header_wrap {
@@ -407,7 +420,7 @@ Small Device Styles
   }
 
   #project_title {
-  font-size: 32px;
+    font-size: 32px;
   }
 
   h1 {
@@ -440,4 +453,16 @@ Small Device Styles
     font-size: 11px;
   }
 
+  #header_wrap .inner {
+    padding-top: 95px;
+  }
+  .banners {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+  }
+  #enterprise_banner {
+    margin-top: 5px;
+    border-radius: 2px;
+  }
 }
