@@ -1,4 +1,4 @@
-/* Move down content because we have a fixed navbar that is 3.5rem tall */
+/* Move down content because we have a fixed navbar that is 6.75rem tall */
 body {
-  padding-top: 4.5rem;
+  padding-top: 6.75rem;
 }
