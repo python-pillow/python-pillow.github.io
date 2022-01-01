@@ -1,122 +1,81 @@
-
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Pillow: the friendly PIL fork">
-    <meta name="generator" content="Jekyll v3.8.6">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Python Pillow. Pillow: the friendly PIL fork. Python Imaging Library.">
+    <meta name="author" content="Fredrik Lundh, Alex Clark, Pillow contributors">
     <title>Python Pillow</title>
-
-    <link rel="canonical" href="https://python-pillow.org/">
-
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
-    <!-- Favicons -->
-    <meta name="msapplication-config" content="/docs/4.4/assets/img/favicons/browserconfig.xml">
-    <meta name="theme-color" content="#563d7c">
     <link rel="icon" type="image/x-icon" href="/images/pillow.ico">
-
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
-    <!-- Custom styles for this template -->
-    <link href="jumbotron.css" rel="stylesheet">
+    <link rel="canonical" href="https://python-pillow.org/">
   </head>
-  <body>
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-  <a class="navbar-brand" href="#"><img src="images/pillow-logo.png"></a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsDefault" aria-controls="navbarsDefault" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarsDefault">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="#tidelift">Enterprise</a>
-      </li>
-    </ul>
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.facebook.com/Python-Pillow-102023528073709"><i class="fab fa-facebook fa-2x text-info"></i></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://github.com/python-pillow"><i class="fab fa-github fa-2x text-info"></i></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://twitter.com/PythonPillow"><i class="fab fa-twitter fa-2x text-info"></i></a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
-<main role="main">
-
-  <!-- Main jumbotron for a primary marketing message or call to action -->
-  <div class="jumbotron" style="background: url(images/img49.png)">
-    <div class="container bg-dark text-light rounded p-3">
-      <h1 class="display-3">Welcome</h1>
-      <p class="lead">This is the home of Pillow, the friendly PIL fork. PIL is the Python Imaging Library. If you have ever worried or wondered about the future of PIL, please stop. <strong>We're here to save the day</strong>.</p>
-      <p><a target="_blank" class="btn btn-primary btn-lg" href="https://pillow.readthedocs.io/en/stable/about.html" role="button">Learn more &raquo;</a></p>
+  <body class="bg-light"> 
+<main> 
+  <nav class="navbar navbar-light fixed-top bg-dark mb-5">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">
+        <img src="/images/pillow-logo-light-text-1280x640.png" height="120" alt="" class="d-inline-block align-text-top">
+      </a>
+      <ul class="list-group list-group-horizontal">
+        <li class="nav-item">
+          <a class="nav-link" target="_blank" href="https://www.facebook.com/Python-Pillow-102023528073709"><i class="fab fa-facebook fa-2x"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" target="_blank" href="https://twitter.com/PythonPillow"><i class="fab fa-twitter fa-2x"></i></a>
+        </li>
+      </ul>
     </div>
-  </div>
-
-  <div class="container">
-    <div class="row">
-      <div class="col-md-4">
-        <h2>Documentation</h2>
-        <p>Our documentation is <a target="_blank" href="https://pillow.readthedocs.io/">hosted on readthedocs.io</a> and includes <a target="_blank" href="https://pillow.readthedocs.io/en/stable/installation.html">installation instructions</a>, <a target="_blank" href="https://pillow.readthedocs.io/en/stable/handbook/index.html">handbook</a>, <a target="_blank" href= "https://pillow.readthedocs.io/en/stable/reference/index.html">API reference</a> and <a target="_blank" href="https://pillow.readthedocs.io/en/stable/releasenotes/index.html">release notes</a>.</p> 
-        <p><a target="_blank" class="btn btn-secondary" href="https://pillow.readthedocs.io/" role="button">View details &raquo;</a></p>
-      </div>
-      <div class="col-md-4">
-        <h2>Discussion</h2>
-        <p>Discussion about Pillow development, programming and technical issues occurs on <a target="_blank" href="https://github.com/python-pillow/Pillow/issues">GitHub</a>, <a target="_blank" href="https://stackoverflow.com/questions/tagged/python-imaging-library">Stack Overflow</a>, <a target="_blank" href="https://gitter.im/python-pillow/Pillow">Gitter</a> and <a target="_blank" href="irc://irc.freenode.net#pil">IRC</a>.</p><p>You may also watch the <a href="https://www.youtube.com/watch?v=D0YwZhksDs8" target="_blank">2020 State of Pillow talk on YouTube</a>.</p>
-      </div>
-      <div class="col-md-4">
-        <h2>Source Code</h2>
-        <p>Our source code is <a target="_blank" href= "https://github.com/python-pillow/Pillow">hosted on GitHub</a> and tested on <a target="_blank" href="https://github.com/python-pillow/Pillow/actions">GitHub Actions</a>, <a target="_blank" href="https://ci.appveyor.com/project/python-pillow/Pillow">AppVeyor</a>, <a target="_blank" href="https://travis-ci.com/github/python-pillow/pillow-wheels">Travis CI</a>, <a target="_blank" href="https://codecov.io/gh/python-pillow/Pillow">Codecov</a> and released on the <a target="_blank" href="https://pypi.org/project/Pillow">Python Package Index</a>.</p>
-        <p><a target="_blank" class="btn btn-secondary" href="https://github.com/python-pillow/Pillow" role="button"><i class="fab fa-github mr-1"></i>View details &raquo;</a></p>
+  </nav>
+  <div class="container py-5 mt-pillow">
+    <div class="p-5 mb-4 bg-pillow rounded-3">
+      <div class="container-fluid p-5 bg-white border rounded-1">
+        <h1 class="display-5 fw-bold">Welcome</h1>
+        <div class="col-md-12 fs-4"><p>This is the home of Pillow, the friendly PIL fork. PIL is an acronym for Python Imaging Library.</p><p class>If you have ever worried or wondered about the future of PIL, please stop. We're here to save the day.</p>
+        </div>
       </div>
     </div>
-    <div class="row justify-content-center mt-3 bg-light p-3" id="tidelift">
-      <div class="col-md-8 text-center">
-        <p>
-          <h2>For Enterprise</h2>
+    <div class="row"> 
+      <div class="col-md-12">
+        <div class="p-4 mb-4 text-center">
+          <h2><a target="_blank" class="text-decoration-none text-dark" href="https://github.com/python-pillow/Pillow/blob/main/docs/releasenotes/9.0.0.rst#900">In memory of Fredrik Lundh</a></h2>
+        </div>
+      </div>
+    </div>
+    <div class="row align-items-md-stretch"> 
+      <div class="col-md-4">
+        <div class="h-100 p-5 bg-dark text-light rounded-3">
+          <h2>Documentation</h2>
+          <p>Our <a target="_blank" href="https://pillow.readthedocs.io/">documentation</a> is hosted by Read the Docs and includes <a target="_blank" href="https://pillow.readthedocs.io/en/stable/installation.html">installation instructions</a>, <a target="_blank" href="https://pillow.readthedocs.io/en/stable/handbook/index.html">handbook</a>, <a target="_blank" href= "https://pillow.readthedocs.io/en/stable/reference/index.html">API reference</a> and <a target="_blank" href="https://pillow.readthedocs.io/en/stable/releasenotes/index.html">release notes</a>.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="h-100 p-5 bg-white border rounded-3">
+          <h2>Discussion</h2>
+          <p>Discussion about Pillow development, programming and technical issues occurs on <a target="_blank" href="https://github.com/python-pillow/Pillow/issues">GitHub</a>, <a target="_blank" href="https://stackoverflow.com/questions/tagged/python-imaging-library">Stack Overflow</a> and <a target="_blank" href="https://gitter.im/python-pillow/Pillow">Gitter</a>. 
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="h-100 p-5 bg-dark text-light rounded-3">
+          <h2>Source Code</h2>
+          <p>Our <a target="_blank" href= "https://github.com/python-pillow/Pillow">source code</a> is hosted by GitHub and tested on <a target="_blank" href="https://github.com/python-pillow/Pillow/actions">GitHub Actions</a>, <a target="_blank" href="https://ci.appveyor.com/project/python-pillow/Pillow">AppVeyor</a>, <a target="_blank" href="https://travis-ci.com/github/python-pillow/pillow-wheels">Travis CI</a>, <a target="_blank" href="https://codecov.io/gh/python-pillow/Pillow">Codecov</a> and uploaded to the <a target="_blank" href="https://pypi.org/project/Pillow">Python Package Index</a>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="h-100 p-5 rounded-3 text-center bg-white rounded-3 border my-5">
+      <h2 class="py-5">For Enterprise</h2>
+        <img class="img-fluid" src="images/Tidelift_primary-logo.png">
+        <p class="py-5">Available as part of the Tidelift Subscription.</p>
+        <p class="text-start">The maintainers of Pillow and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use.</p>
+        <p class="text-center">
+          <a target="_blank" class="btn btn-lg btn-outline-dark" href="https://tidelift.com/subscription/pkg/pypi-pillow?utm_source=pypi-pillow&utm_medium=referral&utm_campaign=enterprise&utm_term=repo">Free Trial</a>
         </p>
-        <p>
-          <img class="img-fluid" src="images/Tidelift_primary-logo.png">
-        </p>
-        <p>Available as part of the Tidelift Subscription.</p>
-        <p class="text-left">The maintainers of Pillow and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use.</p>
-        <p><a target="_blank" class="btn btn-primary btn-lg" href="https://tidelift.com/subscription/pkg/pypi-pillow?utm_source=pypi-pillow&utm_medium=referral&utm_campaign=enterprise&utm_term=repo">Learn more.</a></p>
-      </div>
     </div>
 
-    <hr>
-
-  </div> <!-- /container -->
-
+    <footer class="pt-3 mt-4 border-top">
+      <p>&copy; 1995-2009 Fredrik Lundh (PIL author) and contributors. &copy; 2010-2022 Alex Clark (Pillow author) and <a target="_blank" href="https://github.com/python-pillow/Pillow/graphs/contributors">contributors</a>. Logo by Alastair Houghton. Psychedelic art by Jeremy Kun.</p>
+    </footer>
+  </div>
 </main>
-
-<footer class="container">
-  <p>&copy; Copyright <a target="_blank" href="https://effbot.org/zone/copyright.htm">Fredrik Lundh (PIL author)</a>, <a target="_blank" href="https://aclark.net/#pillow">Alex Clark (Pillow fork author)</a> and <a target="_blank" href="https://github.com/python-pillow/Pillow/graphs/contributors">GitHub Contributors</a> 1995-2021. Logo by <a target="_blank" href="https://github.com/python-pillow/Pillow/issues/575">Alastair Houghton</a>. Psychedelic art by <a target="_blank" href="https://jeremykun.com/2012/01/01/random-psychedelic-art/">Jeremy Kun</a>.</p>
-</footer>
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-<script src="https://kit.fontawesome.com/b99cce5dfd.js" crossorigin="anonymous"></script>
+    <script src="dist/bundle.js"></script>
+  </body>
 </html>
