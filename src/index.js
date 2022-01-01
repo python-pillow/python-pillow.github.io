@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './pillow.css';
 //import './cover.css';
 //import './toolkit-bold.scss';
 //import './toolkit-bold.css';
