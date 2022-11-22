@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/headstraight/website.git"
+    "url": "git+https://github.com/python-pillow/python-pillow.github.io.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/headstraight/website/issues"
+    "url": "https://github.com/python-pillow/python-pillow.github.io/issues"
   },
-  "homepage": "https://github.com/headstraight/website#readme",
+  "homepage": "https://github.com/python-pillow/python-pillow.github.io#readme",
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "css-loader": "^6.2.0",
