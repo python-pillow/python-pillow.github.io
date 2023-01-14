@@ -9,7 +9,7 @@
 # License
 # ------------------------------------------------------------------------------ 
 #
-# Copyright 2016—2021 Jeffrey A. Clark, "Alex"
+# Copyright 2016—2023 Jeffrey A. Clark (Alex)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -162,10 +162,13 @@ define HOME_PAGE
 {% load webpack_loader static %}
 <div class="jumbotron py-5">
   <div class="container">
-    <h1 class="display-3">Hello, world!</h1>
+    <a href="/" class="text-decoration-none text-dark"><h1 class="display-3">Hello, world!</h1></a>
     <p>This is a template for a simple marketing or informational website. It includes a large callout called a
       jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-    <p><a class="btn btn-primary btn-lg" href="{% url 'admin:index' %}" role="button">Learn more »</a></p>
+    <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+      <a type="button" class="btn btn-primary" href="{% url 'admin:index' %}" role="button">Django Admin</a>
+      <a type="button" class="btn btn-primary" href="/api" target="_blank" role="button">Web Browseable API</a>
+    </div>
     <div class="d-flex justify-content-center">
       <img src="{% static 'vendors/images/webpack.png' %}" class="img-fluid"/>
     </div>
@@ -188,8 +191,81 @@ pipeline {
 	}
 }
 endef
+define API_AUTH
+from django.conf import settings
+from django.urls import include, path
+from django.contrib import admin
+
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.core import urls as wagtail_urls
+from wagtail.documents import urls as wagtaildocs_urls
+
+from search import views as search_views
+
+from django.contrib.auth.models import User
+from rest_framework import routers, serializers, viewsets
+
+urlpatterns = [
+    path('django-admin/', admin.site.urls),
+
+    path('admin/', include(wagtailadmin_urls)),
+    path('documents/', include(wagtaildocs_urls)),
+
+    path('search/', search_views.search, name='search'),
+
+]
+
+
+if settings.DEBUG:
+    from django.conf.urls.static import static
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+    # Serve static and media files from development server
+    urlpatterns += staticfiles_urlpatterns()
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# https://www.django-rest-framework.org/#example
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ['url', 'username', 'email', 'is_staff']
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+router = routers.DefaultRouter()
+router.register(r'users', UserViewSet)
+
+urlpatterns = urlpatterns + [
+    path('api/', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+]
+
+urlpatterns = urlpatterns + [
+    # For anything not caught by a more specific rule above, hand over to
+    # Wagtail's page serving mechanism. This should be the last pattern in
+    # the list:
+    path("", include(wagtail_urls)),
+
+    # Alternatively, if you want Wagtail pages to be served from a subpath
+    # of your site, rather than the site root:
+    #    path("pages/", include(wagtail_urls)),
+]
+endef
+define REST_FRAMEWORK
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+endef
 export HOME_PAGE
 export JENKINS_FILE
+export API_AUTH
+export REST_FRAMEWORK
 
 # Rules
 # ------------------------------------------------------------------------------  
@@ -253,20 +329,6 @@ eb-init-default:
 django-graph-default:
 	python manage.py graph_models $(PROJECT_NAME) -o graph_models_$(PROJECT_NAME).png
 
-django-init-default: pip-install-django pg-init django-project
-	export SETTINGS=settings.py; $(MAKE) django-settings
-	git add $(PROJECT_NAME)
-	git add manage.py
-
-django-init-webpack:
-	python manage.py webpack_init
-
-django-install-default:
-	@echo "Django\ndj-database-url\npsycopg2-binary\nwhitenoise\n" > requirements.txt
-	@$(MAKE) pip-install
-	@$(MAKE) pip-freeze
-	-git add requirements.txt
-
 django-loaddata-default:
 	python manage.py loaddata
 
@@ -289,14 +351,18 @@ django-serve-default:
 django-settings-default:
 	echo "\n# $(PROJECT_NAME)\n" >> $(PROJECT_NAME)/$(SETTINGS)
 	echo "ALLOWED_HOSTS = ['*']\n" >> $(PROJECT_NAME)/$(SETTINGS)
-	echo "import dj_database_url" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "import dj_database_url, os" >> $(PROJECT_NAME)/$(SETTINGS)
 	echo "DATABASE_URL = os.environ.get('DATABASE_URL', \
 		'postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(PROJECT_NAME)')" >> $(PROJECT_NAME)/$(SETTINGS)
 	echo "DATABASES['default'] = dj_database_url.parse(DATABASE_URL)" >> $(PROJECT_NAME)/$(SETTINGS)
-	echo "INSTALLED_APPS.append('webpack_loader')" >> $(PROJECT_NAME)/$(SETTINGS)
-	echo "STATICFILES_DIRS.append(os.path.join(BASE_DIR, 'frontend/build'))" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "INSTALLED_APPS.append('webpack_boilerplate')" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "INSTALLED_APPS.append('rest_framework')" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "STATICFILES_DIRS = [os.path.join(BASE_DIR, 'frontend/build')]" >> $(PROJECT_NAME)/$(SETTINGS)
 	echo "WEBPACK_LOADER = { 'MANIFEST_FILE': os.path.join(BASE_DIR, 'frontend/build/manifest.json'), }" >> \
 		$(PROJECT_NAME)/$(SETTINGS)
+	echo "$$REST_FRAMEWORK" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "LOGIN_REDIRECT_URL = '/'" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'" >> $(PROJECT_NAME)/$(SETTINGS)
 
 django-shell-default:
 	python manage.py shell
@@ -315,8 +381,14 @@ django-user-default:
 	python manage.py shell -c "from django.contrib.auth.models import User; \
 		User.objects.create_user('user', '', 'user')"
 
+django-urls-default:
+	echo "$$API_AUTH" > $(PROJECT_NAME)/$(URLS)
+
 django-npm-install-default:
 	cd frontend; npm install
+
+django-open-default:
+	open http://0.0.0.0:8000
 
 #
 # Git
@@ -324,8 +396,10 @@ django-npm-install-default:
 #
 
 gitignore-default:
-	echo "bin/\nlib/\npyvenv.cfg\n__pycache__" > .gitignore
+	echo "bin/\nlib/\nlib64\nshare/\npyvenv.cfg\n__pycache__\n.elasticbeanstalk/" > .gitignore
 	git add .gitignore
+	git commit -a -m "Add .gitignore"
+	git push
 
 git-branches-default:
 	-for i in $(GIT_BRANCHES) ; do \
@@ -351,21 +425,43 @@ git-set-upstream-default:
 	git push --set-upstream origin main
 
 #
+# iOS
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+#
+
+xcodegen:
+	xcodegen -p $(PROJECT)
+
+#
 # Misc
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 #
 
-dev-default:
-	python setup.py develop
+black-default:
+	-black *.py
+	-black $(PROJECT_NAME)/*.py
+	-black $(PROJECT_NAME)/*/*.py
+	-git commit -a -m "A one time black event"
+	git push
 
-jenkins-file:
-	@echo "$$JENKINS_FILE" > Jenkinsfile
+flake-default:
+	-flake8 *.py
+	-flake8 $(PROJECT_NAME)/*.py
+	-flake8 $(PROJECT_NAME)/*/*.py
 
 help-default:
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F:\
         '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}'\
         | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | xargs | tr ' ' '\n' | awk\
         '{print "make "$$0}' | less  # http://stackoverflow.com/a/26339924
+
+isort-default:
+	-isort *.py
+	-isort $(PROJECT_NAME)/*.py
+	-isort $(PROJECT_NAME)/*/*.py
+
+jenkins-file:
+	@echo "$$JENKINS_FILE" > Jenkinsfile
 
 my-init-default:
 	-mysqladmin -u root drop $(PROJECT_NAME)
@@ -380,12 +476,16 @@ pg-init-default:
 	-dropdb $(PROJECT_NAME)
 	-createdb $(PROJECT_NAME)
 
+python-serve-default:
+	@echo "\n\tServing HTTP on http://0.0.0.0:8000\n"
+	python -m http.server
+
 rand-default:
 	@openssl rand -base64 12 | sed 's/\///g'
 
 review-default:
 ifeq ($(UNAME), Darwin)
-	@open -a $(EDITOR) `find $(PROJECT_NAME) -name \*.py | grep -v __init__.py | grep -v migrations`\
+	@open -a $(REVIEW_EDITOR) `find $(PROJECT_NAME) -name \*.py | grep -v migrations`\
 		`find $(PROJECT_NAME) -name \*.html` `find $(PROJECT_NAME) -name \*.js`
 else
 	@echo "Unsupported"
@@ -394,13 +494,17 @@ endif
 usage-default:
 	@echo "Project Makefile"
 	@echo "Usage:\n"
-	@echo "\tmake <target>\n"
+	@echo "\tmake <project_dir>\n"
 	@echo "Help:\n"
 	@echo "\tmake help"
 
 make-default:
 	git add base.mk
 	git add Makefile
+	git commit -a -m "Add project-makefile files"
+	git push
+
+init-default: gitignore make pip-init readme-init 
 
 #
 # Pip
@@ -410,6 +514,9 @@ make-default:
 pip-freeze-default:
 	pip3 freeze | sort > $(TMPDIR)/requirements.txt
 	mv -f $(TMPDIR)/requirements.txt .
+	git add requirements.txt
+	git commit -a -m "Freezing requirements."
+	git push
 
 pip-install-default: pip-upgrade
 	pip3 install wheel
@@ -417,9 +524,6 @@ pip-install-default: pip-upgrade
 
 pip-install-test-default:
 	pip3 install -r requirements-test.txt
-
-pip-install-wagtail:
-	pip3 install dj-database-url psycopg2-binary whitenoise wagtail python-webpack-boilerplate
 
 pip-install-upgrade-default:
 	cat requirements.txt | awk -F \= '{print $$1}' > $(TMPDIR)/requirements.txt
@@ -435,40 +539,16 @@ pip-init-default:
 	-git add requirements.txt
 
 #
-# Python
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-#
-
-black-default:
-	-black *.py
-#	-black $(PROJECT_NAME)/*.py
-#	-black $(PROJECT_NAME)/*/*.py
-
-isort-default:
-	-isort *.py
-	-isort $(PROJECT_NAME)/*.py
-	-isort $(PROJECT_NAME)/*/*.py
-
-flake-default:
-	-flake8 *.py
-	-flake8 $(PROJECT_NAME)/*.py
-	-flake8 $(PROJECT_NAME)/*/*.py
-
-python-serve-default:
-	@echo "\n\tServing HTTP on http://0.0.0.0:8000\n"
-	python -m http.server
-
-#
 # Readme
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 #
 
 readme-init-default:
-	echo "Creating README.rst"
 	@echo $(PROJECT_NAME) > README.rst
 	@echo "================================================================================\n" >> README.rst
-	echo "Done."
-	git add README.rst
+	@git add README.rst
+	git commit -a -m "Add readme"
+	git push
 
 readme-edit-default:
 	vi README.rst
@@ -488,7 +568,7 @@ sphinx-build-default:
 	sphinx-build -b html -d _build/doctrees . _build/html
 
 sphinx-init:
-	$(MAKE) pip-install-sphinx
+	$(MAKE) sphinx-install
 	sphinx-quickstart -q -p $(PROJECT_NAME) -a $(USER) -v 0.0.1 $(RANDIR)
 	mv $(RANDIR)/* .
 	rmdir $(RANDIR)
@@ -520,37 +600,34 @@ tidelift-request-all-default:
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 #
 
-wagtail-init-default:
-	@$(MAKE) pip-install-wagtail
-	@$(MAKE) pg-init
+wagtail-init-default: db-init wagtail-install
 	wagtail start $(PROJECT_NAME) .
+	$(MAKE) pip-freeze
 	export SETTINGS=settings/base.py; $(MAKE) django-settings
-	git add $(PROJECT_NAME)
-	git add requirements.txt
-	git add manage.py
-	git add Dockerfile
-	git add .dockerignore
-	git add home
-	git add search
-	@$(MAKE) pip-freeze
-	@$(MAKE) django-webpack-init
-	git add frontend
-	@$(MAKE) django-npm-install
+	export URLS=urls.py; $(MAKE) django-urls
+	-git add $(PROJECT_NAME)
+	-git add requirements.txt
+	-git add manage.py
+	-git add Dockerfile
+	-git add .dockerignore
+	-git add home
+	-git add search
 	@$(MAKE) django-migrate
 	@$(MAKE) su
 	@echo "$$HOME_PAGE" > home/templates/home/home_page.html
+	python manage.py webpack_init --skip-checks
+	-git add frontend
+	-git commit -a -m "Add frontend"
+	@$(MAKE) django-npm-install
+	-@$(MAKE) cp
+	@$(MAKE) isort
+	@$(MAKE) black
+	-@$(MAKE) cp
+	@$(MAKE) flake
+	@$(MAKE) serve
 
-wagtail-init-hub:
-	git init
-	hub create -p
-	@$(MAKE) wagtail-init
-	@$(MAKE) make
-	@$(MAKE) readme
-	@$(MAKE) gitignore
-	git commit -m "wagtail-init by project-makefile"
-	@$(MAKE) git-set-upstream
-	@$(MAKE) git-push
-	hub browse
+wagtail-install-default:
+	pip3 install dj-database-url djangorestframework psycopg2-binary python-webpack-boilerplate wagtail
 
 #
 # .PHONY
@@ -558,6 +635,9 @@ wagtail-init-hub:
 #
 
 # django --------------------------------------------------------------------------------
+
+.PHONY: django-init
+django-init: wagtail-init
 
 .PHONY: loaddata
 loaddata: django-loaddata
@@ -568,11 +648,20 @@ load: loaddata
 .PHONY: migrate
 migrate: django-migrate
 
+.PHONY: migrations
+migrations: django-migrations
+
 .PHONY: npm-install
 npm-install: django-npm-install
 
+.PHONY: readme
+readme: readme-init
+
 .PHONY: serve
 serve: django-serve
+
+.PHONY: s
+s: serve
 
 .PHONY: static
 static: django-static
@@ -601,10 +690,13 @@ edit: readme-edit
 e: edit
 
 .PHONY: open
-open: readme-open
+open: django-open
 
 .PHONY: o
 o: open
+
+.PHONY: pdf
+pdf: readme-build
 
 # git --------------------------------------------------------------------------------
 
