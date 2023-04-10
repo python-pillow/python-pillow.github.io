@@ -1,5 +1,6 @@
 .bg-pillow {
-    background: url(/images/img49.png);
+    background-image: url(/images/img49.png);
+    background-size: 100% 100%;
 }
 .mt-pillow {
     margin-top: 10em;
