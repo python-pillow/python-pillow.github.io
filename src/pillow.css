@@ -2,9 +2,7 @@
     background-image: url(/images/img49.png);
     background-size: 100% 100%;
 }
-.mt-pillow {
-    margin-top: 10em;
-}
-#top-info {
-    background-color: #0D6EFD;
+
+#top-info a {
+    color: #F8F9FA;
 }
