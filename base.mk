@@ -150,33 +150,74 @@ TMPDIR := $(shell mktemp -d)
 # https://stackoverflow.com/a/589260/185820
 UNAME := $(shell uname)
 
+define HOME_PAGE_MODEL
+from django.db import models
+from wagtail.models import Page
+from wagtail.fields import RichTextField
+from wagtail.admin.panels import FieldPanel
+from wagtailseo.models import SeoMixin
+
+class HomePage(SeoMixin, Page):
+    description = models.CharField(max_length=255, help_text='A short description of the page', blank=True, null=True)
+    body = RichTextField(blank=True, null=True, help_text='The main content of the page')
+    content_panels = Page.content_panels + [
+        FieldPanel('description'),
+        FieldPanel('body'),
+    ]
+    promote_panels = SeoMixin.seo_panels
+endef
+
 # https://stackoverflow.com/a/649462/185820
-define HOME_PAGE
+define HOME_PAGE_TEMPLATE
 {% extends "base.html" %}
 {% load webpack_loader static %}
 {% block body_class %}template-homepage{% endblock %}
 {% block extra_css %}
-  {% stylesheet_pack 'app' %}
+    {% stylesheet_pack 'app' %}
+    {% include "wagtailseo/meta.html" %}
 {% endblock extra_css %}
 {% block content %}
-{% load webpack_loader static %}
-<div class="jumbotron py-5">
-  <div class="container">
-    <a href="/" class="text-decoration-none text-dark"><h1 class="display-3">Hello, world!</h1></a>
-    <p>This is a template for a simple marketing or informational website. It includes a large callout called a
-      jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-    <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
-      <a type="button" class="btn btn-primary" href="{% url 'admin:index' %}" role="button">Django Admin</a>
-      <a type="button" class="btn btn-primary" href="/api" target="_blank" role="button">Web Browseable API</a>
+    {% load webpack_loader static %}
+    <div class="jumbotron py-5">
+        <div class="container">
+            <a href="/" class="text-decoration-none text-dark">
+                <h1 class="display-3">{{ page.title }}</h1>
+            </a>
+            <h2>{{ page.description|default:'' }}</h2>
+            {{ page.body|default:''|safe }}
+            <div class="btn-group btn-group-lg"
+                 role="group"
+                 aria-label="Basic example">
+                <a type="button"
+                   class="btn btn-primary"
+                   href="{% url 'admin:index' %}"
+                   role="button">Django Admin</a>
+                <a type="button"
+                   class="btn btn-primary"
+                   href="/api"
+                   target="_blank"
+                   role="button">Web Browseable API</a>
+                {% if request.user.is_anonymous %}
+                    <a type="button"
+                       class="btn btn-primary"
+                       href="{% url 'account_login' %}"
+                       role="button">Login</a>
+                {% else %}
+                    <a type="button"
+                       class="btn btn-primary"
+                       href="{% url 'account_logout' %}"
+                       role="button">Logout</a>
+                {% endif %}
+            </div>
+            <div class="d-flex justify-content-center">
+                <img src="{% static 'vendors/images/webpack.png' %}" class="img-fluid" />
+            </div>
+        </div>
     </div>
-    <div class="d-flex justify-content-center">
-      <img src="{% static 'vendors/images/webpack.png' %}" class="img-fluid"/>
-    </div>
-  </div>
-</div>
 {% endblock content %}
 {% block extra_js %}
-{% javascript_pack 'app' 'app2' attrs='charset="UTF-8"' %}
+    {% javascript_pack 'app' attrs='charset="UTF-8"' %}
+    {% include "wagtailseo/struct_data.html" %}
 {% endblock %}
 endef
 define JENKINS_FILE
@@ -191,13 +232,19 @@ pipeline {
 	}
 }
 endef
-define API_AUTH
+define AUTHENTICATION_BACKENDS
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+endef
+define URL_PATTERNS
 from django.conf import settings
 from django.urls import include, path
 from django.contrib import admin
 
 from wagtail.admin import urls as wagtailadmin_urls
-from wagtail.core import urls as wagtail_urls
+from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
 from search import views as search_views
@@ -206,13 +253,9 @@ from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 
 urlpatterns = [
-    path('django-admin/', admin.site.urls),
-
-    path('admin/', include(wagtailadmin_urls)),
-    path('documents/', include(wagtaildocs_urls)),
-
-    path('search/', search_views.search, name='search'),
-
+	path('accounts/', include('allauth.urls')),
+    path('admin/', admin.site.urls),
+    path('wagtail-admin/', include(wagtailadmin_urls)),
 ]
 
 
@@ -262,10 +305,31 @@ REST_FRAMEWORK = {
     ]
 }
 endef
-export HOME_PAGE
+define GIT_IGNORE
+bin/
+__pycache__
+lib/
+lib64
+pyvenv.cfg
+endef
+
+define DEBUG_TOOLBAR
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        path("__debug__/", include(debug_toolbar.urls)),
+    ]
+endef
+
+export HOME_PAGE_MODEL
+export HOME_PAGE_TEMPLATE
 export JENKINS_FILE
-export API_AUTH
+export URL_PATTERNS
 export REST_FRAMEWORK
+export AUTHENTICATION_BACKENDS
+export GIT_IGNORE
+export DEBUG_TOOLBAR
 
 # Rules
 # ------------------------------------------------------------------------------  
@@ -327,7 +391,10 @@ eb-init-default:
 #
 
 django-graph-default:
-	python manage.py graph_models $(PROJECT_NAME) -o graph_models_$(PROJECT_NAME).png
+	python manage.py graph_models -a -o $(PROJECT_NAME).png
+
+django-show-urls-default:
+	python manage.py show_urls
 
 django-loaddata-default:
 	python manage.py loaddata
@@ -337,7 +404,6 @@ django-migrate-default:
 
 django-migrations-default:
 	python manage.py makemigrations
-	git add $(PROJECT_NAME)/migrations/*.py
 
 django-project-default:
 	mkdir -p $(PROJECT_NAME)/templates
@@ -348,21 +414,34 @@ django-serve-default:
 	cd frontend; npm run watch &
 	python manage.py runserver 0.0.0.0:8000
 
+django-serve-prod-default:
+	cd frontend; npm run watch &
+	python manage.py runserver 0.0.0.0:8000 --settings=$(PROJECT_NAME).settings.production
+
 django-settings-default:
-	echo "\n# $(PROJECT_NAME)\n" >> $(PROJECT_NAME)/$(SETTINGS)
-	echo "ALLOWED_HOSTS = ['*']\n" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "# $(PROJECT_NAME)" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "ALLOWED_HOSTS = ['*']" >> $(PROJECT_NAME)/$(SETTINGS)
 	echo "import dj_database_url, os" >> $(PROJECT_NAME)/$(SETTINGS)
 	echo "DATABASE_URL = os.environ.get('DATABASE_URL', \
 		'postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(PROJECT_NAME)')" >> $(PROJECT_NAME)/$(SETTINGS)
 	echo "DATABASES['default'] = dj_database_url.parse(DATABASE_URL)" >> $(PROJECT_NAME)/$(SETTINGS)
 	echo "INSTALLED_APPS.append('webpack_boilerplate')" >> $(PROJECT_NAME)/$(SETTINGS)
 	echo "INSTALLED_APPS.append('rest_framework')" >> $(PROJECT_NAME)/$(SETTINGS)
-	echo "STATICFILES_DIRS = [os.path.join(BASE_DIR, 'frontend/build')]" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "INSTALLED_APPS.append('allauth')" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "INSTALLED_APPS.append('allauth.account')" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "INSTALLED_APPS.append('allauth.socialaccount')" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "INSTALLED_APPS.append('wagtailseo')" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "INSTALLED_APPS.append('wagtail.contrib.settings')" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "INSTALLED_APPS.append('django_extensions')" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "MIDDLEWARE.append('allauth.account.middleware.AccountMiddleware')" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "STATICFILES_DIRS.append(os.path.join(BASE_DIR, 'frontend/build'))" >> $(PROJECT_NAME)/$(SETTINGS)
 	echo "WEBPACK_LOADER = { 'MANIFEST_FILE': os.path.join(BASE_DIR, 'frontend/build/manifest.json'), }" >> \
 		$(PROJECT_NAME)/$(SETTINGS)
 	echo "$$REST_FRAMEWORK" >> $(PROJECT_NAME)/$(SETTINGS)
 	echo "LOGIN_REDIRECT_URL = '/'" >> $(PROJECT_NAME)/$(SETTINGS)
 	echo "DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "$$AUTHENTICATION_BACKENDS" >> $(PROJECT_NAME)/$(SETTINGS)
+	echo "TEMPLATES[0]['OPTIONS']['context_processors'].append('wagtail.contrib.settings.context_processors.settings')" >> $(PROJECT_NAME)/$(SETTINGS)
 
 django-shell-default:
 	python manage.py shell
@@ -381,11 +460,27 @@ django-user-default:
 	python manage.py shell -c "from django.contrib.auth.models import User; \
 		User.objects.create_user('user', '', 'user')"
 
-django-urls-default:
-	echo "$$API_AUTH" > $(PROJECT_NAME)/$(URLS)
+django-url-patterns-default:
+	echo "$$URL_PATTERNS" > $(PROJECT_NAME)/$(URLS)
 
 django-npm-install-default:
 	cd frontend; npm install
+
+django-npm-install-dev-default:
+	cd frontend; npm install \
+        eslint-plugin-react \
+        eslint-config-standard \
+        eslint-config-standard-jsx \
+        mapbox-gl \
+        react-date-range \
+        react-image-crop \
+        --save-dev
+
+django-npm-test-default:
+	cd frontend; npm run test
+
+django-npm-build-default:
+	cd frontend; npm run build
 
 django-open-default:
 	open http://0.0.0.0:8000
@@ -396,7 +491,7 @@ django-open-default:
 #
 
 gitignore-default:
-	echo "bin/\nlib/\nlib64\nshare/\npyvenv.cfg\n__pycache__\n.elasticbeanstalk/" > .gitignore
+	echo "$$GIT_IGNORE" > .gitignore
 	git add .gitignore
 	git commit -a -m "Add .gitignore"
 	git push
@@ -424,6 +519,9 @@ git-push-default:
 git-set-upstream-default:
 	git push --set-upstream origin main
 
+git-commit-empty-default:
+	git commit --allow-empty -m "Empty-Commit" ; git push
+
 #
 # iOS
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
@@ -437,11 +535,22 @@ xcodegen:
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 #
 
+build-default:
+	$(MAKE) readme-build
+
 black-default:
 	-black *.py
 	-black $(PROJECT_NAME)/*.py
 	-black $(PROJECT_NAME)/*/*.py
 	-git commit -a -m "A one time black event"
+	git push
+
+djlint-default:
+	-djlint --reformat *.html
+	-djlint --reformat $(PROJECT_NAME)/*.html
+	-djlint --reformat $(PROJECT_NAME)/*/*.html
+	-djlint --reformat $(PROJECT_NAME)/*/*/*.html
+	-git commit -a -m "A one time djlint event"
 	git push
 
 flake-default:
@@ -459,6 +568,8 @@ isort-default:
 	-isort *.py
 	-isort $(PROJECT_NAME)/*.py
 	-isort $(PROJECT_NAME)/*/*.py
+	-git commit -a -m "A one time isort event"
+	git push
 
 jenkins-file:
 	@echo "$$JENKINS_FILE" > Jenkinsfile
@@ -466,11 +577,6 @@ jenkins-file:
 my-init-default:
 	-mysqladmin -u root drop $(PROJECT_NAME)
 	-mysqladmin -u root create $(PROJECT_NAME)
-
-pdf-build-default:
-	rst2pdf README.rst > README.pdf
-	git add README.pdf
-	$(MAKE) commit-push
 
 pg-init-default:
 	-dropdb $(PROJECT_NAME)
@@ -493,18 +599,33 @@ endif
 
 usage-default:
 	@echo "Project Makefile"
-	@echo "Usage:\n"
-	@echo "\tmake <project_dir>\n"
-	@echo "Help:\n"
-	@echo "\tmake help"
+	@echo "Usage:"
+	@echo "  make <task>"
+	@echo "Help:"
+	@echo "  make help"
 
 make-default:
 	git add base.mk
 	git add Makefile
-	git commit -a -m "Add project-makefile files"
+	git commit -a -m "Add/update project-makefile files"
 	git push
 
 init-default: gitignore make pip-init readme-init 
+
+deploy-default: eb-deploy
+
+serve-default: django-serve
+
+serve-prod-default: django-serve-prod
+
+open-default: django-open
+
+ruff-default:
+	-ruff *.py
+	-ruff $(PROJECT_NAME)/*.py
+	-ruff $(PROJECT_NAME)/*/*.py
+	-git commit -a -m "A one time ruff event"
+	git push
 
 #
 # Pip
@@ -525,11 +646,15 @@ pip-install-default: pip-upgrade
 pip-install-test-default:
 	pip3 install -r requirements-test.txt
 
+pip-install-dev-default:
+	pip3 install -r requirements-dev.txt
+
 pip-install-upgrade-default:
 	cat requirements.txt | awk -F \= '{print $$1}' > $(TMPDIR)/requirements.txt
 	mv -f $(TMPDIR)/requirements.txt .
 	pip3 install -U -r requirements.txt
-	$(MAKE) pip-freeze
+	pip3 freeze | sort > $(TMPDIR)/requirements.txt
+	mv -f $(TMPDIR)/requirements.txt .
 
 pip-upgrade:
 	pip3 install -U pip
@@ -544,8 +669,8 @@ pip-init-default:
 #
 
 readme-init-default:
-	@echo $(PROJECT_NAME) > README.rst
-	@echo "================================================================================\n" >> README.rst
+	@echo "$(PROJECT_NAME)" > README.rst
+	@echo "================================================================================" >> README.rst
 	@git add README.rst
 	git commit -a -m "Add readme"
 	git push
@@ -564,9 +689,6 @@ readme-build-default:
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 #
 
-sphinx-build-default:
-	sphinx-build -b html -d _build/doctrees . _build/html
-
 sphinx-init:
 	$(MAKE) sphinx-install
 	sphinx-quickstart -q -p $(PROJECT_NAME) -a $(USER) -v 0.0.1 $(RANDIR)
@@ -578,6 +700,13 @@ sphinx-install:
 	@$(MAKE) pip-install
 	@$(MAKE) pip-freeze
 	-git add requirements.txt
+
+sphinx-build-default:
+	sphinx-build -b html -d _build/doctrees . _build/html
+
+sphinx-build-pdf-default:
+	sphinx-build -b rinoh . _build/rinoh
+
 sphinx-serve-default:
 	cd _build/html;python -m http.server
 
@@ -599,35 +728,70 @@ tidelift-request-all-default:
 # Wagtail
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 #
+wagtail-init-clean-default:
+	-rm -vf .dockerignore
+	-rm -vf Dockerfile
+	-rm -vf manage.py
+	-rm -vf requirements.txt
+	-rm -rvf home/
+	-rm -rvf search/
+	-rm -rvf $(PROJECT_NAME)/
+	-rm -rvf frontend/
+	-rm -vf README.rst
 
 wagtail-init-default: db-init wagtail-install
 	wagtail start $(PROJECT_NAME) .
 	$(MAKE) pip-freeze
 	export SETTINGS=settings/base.py; $(MAKE) django-settings
-	export URLS=urls.py; $(MAKE) django-urls
+	export URLS=urls.py; $(MAKE) django-url-patterns
 	-git add $(PROJECT_NAME)
 	-git add requirements.txt
 	-git add manage.py
 	-git add Dockerfile
 	-git add .dockerignore
+	@echo "$$HOME_PAGE_MODEL" > home/models.py
+	@$(MAKE) django-migrations
 	-git add home
 	-git add search
 	@$(MAKE) django-migrate
 	@$(MAKE) su
-	@echo "$$HOME_PAGE" > home/templates/home/home_page.html
+	@echo "$$HOME_PAGE_TEMPLATE" > home/templates/home/home_page.html
 	python manage.py webpack_init --skip-checks
 	-git add frontend
 	-git commit -a -m "Add frontend"
 	@$(MAKE) django-npm-install
+	@$(MAKE) django-npm-install-dev
 	-@$(MAKE) cp
 	@$(MAKE) isort
 	@$(MAKE) black
 	-@$(MAKE) cp
 	@$(MAKE) flake
+	@$(MAKE) readme
 	@$(MAKE) serve
 
 wagtail-install-default:
-	pip3 install dj-database-url djangorestframework psycopg2-binary python-webpack-boilerplate wagtail
+	pip3 install \
+        djangorestframework \
+        django-allauth \
+        django-after-response \
+        django-ckeditor \
+        django-countries \
+        django-debug-toolbar \
+        django-extensions \
+        django-imagekit \
+        django-import-export \
+        django-ipware \
+        django-recurrence \
+        django-registration \
+        django-richtextfield \
+        django-timezone-field \
+        dj-database-url \
+        mailchimp-marketing \
+        mailchimp-transactional \
+        psycopg2-binary \
+        python-webpack-boilerplate \
+        wagtail \
+        wagtail-seo 
 
 #
 # .PHONY
@@ -638,6 +802,15 @@ wagtail-install-default:
 
 .PHONY: django-init
 django-init: wagtail-init
+
+.PHONY: django-clean
+django-clean: wagtail-init-clean
+
+.PHONY: graph
+graph: django-graph
+
+.PHONY: urls
+urls: django-show-urls
 
 .PHONY: loaddata
 loaddata: django-loaddata
@@ -654,15 +827,6 @@ migrations: django-migrations
 .PHONY: npm-install
 npm-install: django-npm-install
 
-.PHONY: readme
-readme: readme-init
-
-.PHONY: serve
-serve: django-serve
-
-.PHONY: s
-s: serve
-
 .PHONY: static
 static: django-static
 
@@ -675,13 +839,24 @@ test: django-test
 .PHONY: user
 user: django-user
 
-# readme --------------------------------------------------------------------------------
+.PHONY: pack
+pack: django-npm-build
 
-.PHONY: build
-build: readme-build
+# misc --------------------------------------------------------------------------------
+
+.PHONY: readme
+readme: readme-init
+
+.PHONY: s
+s: serve
+
+.PHONY: sp
+sp: serve-prod
 
 .PHONY: b
 b: build
+
+# readme --------------------------------------------------------------------------------
 
 .PHONY: edit
 edit: readme-edit
@@ -689,14 +864,8 @@ edit: readme-edit
 .PHONY: e
 e: edit
 
-.PHONY: open
-open: django-open
-
 .PHONY: o
 o: open
-
-.PHONY: pdf
-pdf: readme-build
 
 # git --------------------------------------------------------------------------------
 
@@ -705,6 +874,9 @@ ce: git-commit-edit git-push
 
 .PHONY: cp
 cp: git-commit-push
+
+.PHONY: e
+empty: git-commit-empty
 
 # pip --------------------------------------------------------------------------------
 
@@ -717,17 +889,13 @@ install: pip-install
 .PHONY: install-test
 install-test: pip-install-test
 
+.PHONY: install-dev
+install-dev: pip-install-dev
+
 # --------------------------------------------------------------------------------
 
 .PHONY: db-init
 db-init: pg-init
-
-# --------------------------------------------------------------------------------
-
-.PHONY: deploy
-deploy: eb-deploy
-.PHONY: d
-d: deploy
 
 # --------------------------------------------------------------------------------
 
@@ -738,6 +906,11 @@ h: help
 
 .PHONY: r
 r: rand
+
+# --------------------------------------------------------------------------------
+
+.PHONY: d
+d: deploy
 
 # Overrides
 # ------------------------------------------------------------------------------  
