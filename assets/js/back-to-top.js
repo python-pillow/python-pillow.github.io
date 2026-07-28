@@ -5,13 +5,16 @@
     if (!button) return;
 
     var SHOW_AFTER_PX = 600;
+    // Small fudge factor so sub-pixel scroll rounding still counts as "at
+    // the bottom" of the page.
+    var BOTTOM_FUDGE_PX = 4;
     var ticking = false;
 
     function update() {
         var scrollY = window.scrollY || window.pageYOffset;
         var pageHeight = document.documentElement.scrollHeight;
         var isScrollable = pageHeight > window.innerHeight;
-        var atBottom = isScrollable && window.innerHeight + scrollY >= pageHeight - 4;
+        var atBottom = isScrollable && window.innerHeight + scrollY >= pageHeight - BOTTOM_FUDGE_PX;
         button.classList.toggle("is-visible", scrollY > SHOW_AFTER_PX || atBottom);
         ticking = false;
     }

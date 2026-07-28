@@ -5,10 +5,12 @@
    - Coral/terracotta and magenta are pulled directly from the flowers in
      the Pillow logo photo.
    - Sky blue is pulled from the desert/sky photo in the same logo.
-   - All three also appear in assets/images/psychedelic-glow.png, the
+   - All three also appear in assets/images/psychedelic-glow.jpg, the
      psychedelic rainbow texture from the original PIL-era site (art by
      Jeremy Kun), which we reuse as a subtle glow behind the hero logo for
-     a bit of the site's history and visual uniqueness.
+     a bit of the site's history and visual uniqueness. Pre-blurred and
+     pre-saturated at build time (rather than via CSS `filter`) to avoid
+     the runtime GPU cost of filtering a full-viewport layer.
    - Ink (near-black) and warm paper (off-white) anchor everything so the
      brighter accent colors stay legible and don't overwhelm the page.
    ========================================================================== */
@@ -239,14 +241,15 @@ img {
 }
 
 .hero::before {
-    /* Psychedelic art by Jeremy Kun, from the original PIL-era site */
+    /* Psychedelic art by Jeremy Kun, from the original PIL-era site.
+       Blur/saturation are pre-baked into the image itself (see the
+       palette rationale note above), so no CSS filter is needed here. */
     content: "";
     position: absolute;
     inset: 0;
-    background-image: url(../images/psychedelic-glow.png);
+    background-image: url(../images/psychedelic-glow.jpg);
     background-size: cover;
     background-position: center;
-    filter: blur(1px) saturate(1.3);
     opacity: .45;
     mix-blend-mode: screen;
     z-index: -2;
@@ -467,6 +470,10 @@ section {
 
 .sponsor-chip i {
     margin-right: .5rem;
+}
+
+.sponsor-cta {
+    text-align: center;
 }
 
 @media (max-width: 760px) {
@@ -737,13 +744,15 @@ section {
     font-size: 1.1rem;
     z-index: 10;
     opacity: 0;
+    visibility: hidden;
     transform: translateY(.5rem);
     pointer-events: none;
-    transition: opacity .2s ease-in-out, transform .2s ease-in-out, background-color .15s ease-in-out;
+    transition: opacity .2s ease-in-out, transform .2s ease-in-out, background-color .15s ease-in-out, visibility .2s;
 }
 
 .back-to-top.is-visible {
     opacity: 1;
+    visibility: visible;
     transform: translateY(0);
     pointer-events: auto;
 }
