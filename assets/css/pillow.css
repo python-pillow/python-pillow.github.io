@@ -641,6 +641,8 @@ section {
     list-style: none;
     display: grid;
     gap: .6rem;
+    margin: 0;
+    padding: 0;
 }
 
 .footer-col a,

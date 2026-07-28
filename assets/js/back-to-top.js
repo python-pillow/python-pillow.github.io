@@ -9,7 +9,9 @@
 
     function update() {
         var scrollY = window.scrollY || window.pageYOffset;
-        var atBottom = window.innerHeight + scrollY >= document.documentElement.scrollHeight - 4;
+        var pageHeight = document.documentElement.scrollHeight;
+        var isScrollable = pageHeight > window.innerHeight;
+        var atBottom = isScrollable && window.innerHeight + scrollY >= pageHeight - 4;
         button.classList.toggle("is-visible", scrollY > SHOW_AFTER_PX || atBottom);
         ticking = false;
     }
