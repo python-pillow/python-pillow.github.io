@@ -4,160 +4,310 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description"
-              content="Python Pillow. Pillow: the friendly PIL fork. Python Imaging Library.">
+              content="Pillow: the Python Imaging Library. Adds image processing capabilities to your Python interpreter.">
         <meta name="author"
-              content="Fredrik Lundh, Jeffrey A. Clark, Pillow Contributors">
-
-        <link rel="stylesheet" href="assets/css/pillow.css">
+              content="Fredrik Lundh, Jeffrey 'Alex' Clark, Pillow Contributors">
 
         <link href="assets/fontawesome/css/fontawesome.min.css" rel="stylesheet">
         <link href="assets/fontawesome/css/brands.min.css" rel="stylesheet">
         <link href="assets/fontawesome/css/solid.min.css" rel="stylesheet">
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="assets/css/pillow.css">
 
         <title>Python Pillow</title>
 
         <link rel="icon" type="image/x-icon" href="assets/images/pillow.ico">
-        <link rel="canonical" href="https://python-pillow.github.io/">
+        <link rel="canonical" href="https://python-pillow.org/">
     </head>
     <body>
-        <nav class="navbar navbar-dark bg-dark">
-            <div class="container">
-                <a class="navbar-brand" href="/">
-                    <img src="assets/images/pillow-logo-light-text-120x60.png"
-                         width="120"
-                         height="60"
-                         alt="Pillow logo with text"
-                         class="d-inline-block align-text-top">
+        <header id="top" class="site-header">
+            <div class="wrap">
+                <a class="brand" href="/">
+                    <img src="assets/images/pillow-logo-light-text-480x240.png"
+                         width="480"
+                         height="240"
+                         alt="Pillow logo with text">
                 </a>
-                <div id="nav-content">
-                    <ul class="nav">
-                        <li class="nav-item">
-                            <a class="nav-link px-2"
-                               target="_blank"
-                               href="https://github.com/python-pillow/Pillow">
-                            <i class="fab fa-github fa-xl text-light"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-2"
-                               target="_blank"
-                               href="https://fosstodon.org/@pillow"
-                               rel="me">
-                            <i class="fab fa-mastodon fa-xl text-light"></i></a>
-                        </li>
-                    </ul>
+                <div class="header-actions">
+                    <nav class="site-nav" aria-label="Page sections">
+                        <a href="#docs">Project</a>
+                        <a href="#showcase">Showcase</a>
+                        <a href="#history">History</a>
+                    </nav>
+                    <a class="btn btn-sponsor btn-sm" href="#sponsor">
+                        <i class="fas fa-heart" aria-hidden="true"></i> Sponsor</a>
+                    <a class="icon-link" href="https://github.com/python-pillow/Pillow" aria-label="GitHub">
+                        <i class="fab fa-github" aria-hidden="true"></i></a>
+                    <a class="icon-link" href="https://fosstodon.org/@pillow" rel="me" aria-label="Mastodon">
+                        <i class="fab fa-mastodon" aria-hidden="true"></i></a>
                 </div>
             </div>
-        </nav>
+        </header>
+
         <main>
-            <div class="container mt-5">
-                <div class="mb-4 bg-pillow rounded-3 text-center">
-                    <div class="container-fluid p-5 bg-white border rounded-3" style="--bs-bg-opacity: .93;">
-                        <div id="jumbotron-icon">
-                            <img src="assets/images/pillow-logo-248x250.png"
-                                 width="248"
-                                 height="250"
-                                 alt="Pillow logo"
-                                 class="img-fluid">
+            <!-- Hero -->
+            <section class="hero">
+                <div class="wrap">
+                    <div class="hero-copy">
+                        <p class="hero-eyebrow">Python Imaging Library</p>
+                        <h1>Pillow</h1>
+                        <p>Pillow adds powerful image processing capabilities to your Python
+                           interpreter &mdash; open, edit, and save many different image file formats
+                           with a simple, well-documented API.</p>
+                        <div class="hero-actions">
+                            <a class="btn btn-primary btn-lg" href="https://pypi.org/project/pillow/">Download from PyPI</a>
+                            <a class="btn btn-outline btn-lg" href="https://pillow.readthedocs.io/">Read the docs</a>
+                            <a class="btn btn-sponsor btn-lg" href="#sponsor">
+                                <i class="fas fa-heart" aria-hidden="true"></i> Sponsor</a>
                         </div>
-                        <h1 class="display-6 fw-bold">Pillow</h1>
-                        <div class="col-lg-8 mx-auto fs-4 lead">
-                            <p>This is the home of Pillow, the friendly PIL fork.</p>
-                            <p>PIL is an acronym for Python Imaging Library. 
-                            If you have ever worried or wondered about the future of PIL, please stop. We're here to save the day.</p>
+                    </div>
+                    <div class="hero-art">
+                        <img src="assets/images/pillow-logo-248x250.png" width="248" height="250" alt="Pillow logo">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Info list -->
+            <section id="docs">
+                <div class="wrap">
+                    <div class="section-head center">
+                        <h2>Project</h2>
+                    </div>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <h3>Documentation</h3>
+                            <p>
+                                Our <a href="https://pillow.readthedocs.io/">documentation</a> is hosted by Read the Docs and includes
+                                <a href="https://pillow.readthedocs.io/en/stable/installation.html">installation instructions</a>,
+                                <a href="https://pillow.readthedocs.io/en/stable/handbook/index.html">handbook</a>,
+                                <a href="https://pillow.readthedocs.io/en/stable/reference/index.html">API reference</a> and
+                                <a href="https://pillow.readthedocs.io/en/stable/releasenotes/index.html">release notes</a>.
+                            </p>
                         </div>
-                        <div class="d-flex flex-column flex-md-row align-items-md-stretch justify-content-md-center gap-4 mt-4">
-                            <a class="btn btn-primary btn-lg px-4 rounded-pill"
-                               href="https://pypi.org/project/pillow/">Get from PyPI</a>
-                            <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill"
-                               href="https://pillow.readthedocs.io/">Read the docs</a>
+                        <div class="info-item">
+                            <h3>Discussion</h3>
+                            <p>
+                                Discussion about Pillow development, programming and technical issues occurs on
+                                <a href="https://github.com/python-pillow/Pillow/issues">GitHub</a>,
+                                <a href="https://stackoverflow.com/questions/tagged/python-imaging-library">Stack Overflow</a> and
+                                <a href="https://gitter.im/python-pillow/Pillow">Gitter</a>.
+                            </p>
+                        </div>
+                        <div class="info-item">
+                            <h3>Source Code</h3>
+                            <p>
+                                Our <a href="https://github.com/python-pillow/Pillow">source code</a> is hosted by GitHub and tested on
+                                <a href="https://github.com/python-pillow/Pillow/actions">GitHub Actions</a> and
+                                <a href="https://codecov.io/gh/python-pillow/Pillow">Codecov</a>, and uploaded to the
+                                <a href="https://pypi.org/project/pillow">Python Package Index</a>.
+                            </p>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="p-4 mb-3 text-center">
-                            <h2>
-                                <a target="_blank"
-                                   class="text-decoration-none text-dark"
-                                   href="https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html#fredrik-lundh">In memory of Fredrik Lundh</a>
-                            </h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="row row-cols-1 row-cols-lg-3 g-4">
-                    <div class="col">
-                        <div class="card h-100 p-4 bg-dark text-light rounded-3">
-                            <div class="card-body">
-                                <h2 class="card-title">Documentation</h2>
-                                <p class="card-text">
-                                    Our <a target="_blank" href="https://pillow.readthedocs.io/">documentation</a> is hosted by Read the Docs and includes 
-                                        <a target="_blank" href="https://pillow.readthedocs.io/en/stable/installation.html">installation instructions</a>, 
-                                        <a target="_blank" href="https://pillow.readthedocs.io/en/stable/handbook/index.html">handbook</a>, 
-                                        <a target="_blank" href="https://pillow.readthedocs.io/en/stable/reference/index.html">API reference</a> and 
-                                        <a target="_blank" href="https://pillow.readthedocs.io/en/stable/releasenotes/index.html">release notes</a>.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card h-100 p-4 bg-white border rounded-3">
-                            <div class="card-body">
-                                <h2 class="card-title">Discussion</h2>
-                                <p class="card-text">
-                                    Discussion about Pillow development, programming and technical issues occurs on 
-                                    <a target="_blank" href="https://github.com/python-pillow/Pillow/issues">GitHub</a>, 
-                                    <a target="_blank" href="https://stackoverflow.com/questions/tagged/python-imaging-library">Stack Overflow</a> and 
-                                    <a target="_blank" href="https://gitter.im/python-pillow/Pillow">Gitter</a>.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card h-100 p-4 bg-dark text-light rounded-3">
-                            <div class="card-body">
-                                <h2 class="card-title">Source Code</h2>
-                                <p class="card-text">
-                                    Our <a target="_blank" href= "https://github.com/python-pillow/Pillow">source code</a> is hosted by GitHub and tested on 
-                                        <a target="_blank" href="https://github.com/python-pillow/Pillow/actions">GitHub Actions</a>, 
-                                        <a target="_blank" href="https://ci.appveyor.com/project/python-pillow/Pillow">AppVeyor</a>, 
-                                        <a target="_blank" href="https://travis-ci.com/github/python-pillow/pillow-wheels">Travis CI</a>, 
-                                        <a target="_blank" href="https://codecov.io/gh/python-pillow/Pillow">Codecov</a> and uploaded to the 
-                                        <a target="_blank" href="https://pypi.org/project/pillow">Python Package Index</a>.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="container">
-                    <div class="container-fluid pt-5 pb-4 rounded-3 text-center bg-white rounded-3 border my-5">
-                        <h2>For Enterprise</h2>
-                        <img alt="Tidelift logo" class="img-fluid py-5" src="assets/images/Tidelift_primary-logo.png" width="600" height="88">
-                        <p>Available as part of the Tidelift Subscription.</p>
-                        <p class="col-lg-8 mx-auto text-center pb-3">
-                            The maintainers of Pillow and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use.
-                        </p>
-                        <p class="text-center">
-                            <a target="_blank"
-                               class="btn btn-outline-secondary btn-lg"
-                               href="https://tidelift.com/subscription/pkg/pypi-pillow?utm_source=pypi-pillow&utm_medium=referral&utm_campaign=enterprise&utm_term=repo">
-                            Free Trial</a>
+            </section>
+
+            <!-- Sponsor pitch -->
+            <section id="sponsor" class="sponsor">
+                <div class="wrap">
+                    <div class="section-head center">
+                        <h2><i class="fas fa-heart" aria-hidden="true"></i> Support Pillow's Future</h2>
+                        <p>
+                            Pillow is free, open source software maintained by volunteers who review pull requests,
+                            fix bugs, write documentation, and ship regular releases &mdash; all in their spare time.
+                            Millions of projects depend on Pillow every day. If Pillow powers your product or
+                            business, consider sponsoring us to help keep it secure, fast, and well-maintained
+                            for everyone.
                         </p>
                     </div>
+                    <div class="sponsor-grid">
+                        <div class="sponsor-chip"><i class="fas fa-shield-halved" aria-hidden="true"></i> Fund security fixes and long-term maintenance</div>
+                        <div class="sponsor-chip"><i class="fas fa-code-branch" aria-hidden="true"></i> Prioritize reviewing PRs and issues</div>
+                        <div class="sponsor-chip"><i class="fas fa-users" aria-hidden="true"></i> Sustain the maintainers who ship Pillow</div>
+                    </div>
+                    <div class="sponsor-cta">
+                        <a class="btn btn-sponsor-light btn-lg" href="https://github.com/sponsors/python-pillow">
+                            <i class="fas fa-heart" aria-hidden="true"></i> Become a GitHub Sponsor</a>
+                    </div>
                 </div>
+            </section>
+
+            <!-- Enterprise -->
+            <section id="enterprise" class="enterprise">
+                <div class="wrap">
+                    <h2>For Enterprise</h2>
+                    <img class="sonar" alt="Sonar logo" src="assets/images/sonar-logo.svg" width="202" height="64">
+                    <p>Available as part of the Sonar Subscription.</p>
+                    <p>
+                        The maintainers of Pillow and thousands of other packages are working with Sonar
+                        (formerly Tidelift) to deliver commercial support and maintenance for the open source
+                        dependencies you use to build your applications. Save time, reduce risk, and improve
+                        code health, while paying the maintainers of the exact dependencies you use.
+                    </p>
+                    <a class="btn btn-ink" href="https://www.sonarsource.com/solutions/security/?tidelift=tidelift-redirect&utm_source=pypi-pillow&utm_medium=referral&utm_campaign=enterprise&utm_term=repo">
+                       Learn More</a>
+                </div>
+            </section>
+
+            <!-- Case studies -->
+            <section id="showcase" class="case-studies">
+                <div class="wrap">
+                    <div class="section-head center">
+                        <h2>Powering the Python ecosystem</h2>
+                        <p>
+                            Pillow is a dependency of thousands of packages. Here are a few well-known open
+                            source projects that rely on it for image processing.
+                        </p>
+                    </div>
+                    <div class="case-grid">
+                        <div class="case-item">
+                            <h3><i class="fas fa-square" aria-hidden="true"></i> Django</h3>
+                            <p>
+                                The <a href="https://www.djangoproject.com/">Django</a> web
+                                framework uses Pillow to validate and introspect uploaded images for its
+                                built-in <code>ImageField</code>.
+                            </p>
+                        </div>
+                        <div class="case-item">
+                            <h3><i class="fas fa-square" aria-hidden="true"></i> Wagtail</h3>
+                            <p>
+                                <a href="https://wagtail.org/">Wagtail</a>, the popular
+                                Django-based CMS, depends on Pillow to generate the image renditions and
+                                thumbnails used throughout its admin and templates.
+                            </p>
+                        </div>
+                        <div class="case-item">
+                            <h3><i class="fas fa-square" aria-hidden="true"></i> Home Assistant</h3>
+                            <p>
+                                <a href="https://www.home-assistant.io/">Home Assistant</a>
+                                uses Pillow to process camera snapshots and generate thumbnails across its
+                                smart home integrations.
+                            </p>
+                        </div>
+                        <div class="case-item">
+                            <h3><i class="fas fa-square" aria-hidden="true"></i> Matplotlib</h3>
+                            <p>
+                                <a href="https://matplotlib.org/">Matplotlib</a>, the widely
+                                used plotting library, uses Pillow to read and write image formats such as
+                                JPEG when saving figures.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History -->
+            <section id="history" class="history">
+                <div class="wrap">
+                    <div class="section-head">
+                        <h2>From PIL to <span class="highlight">Pillow</span></h2>
+                        <p>
+                            Pillow is a fork of the Python Imaging Library (PIL), but after more than a
+                            decade of active development it has effectively become the Python Imaging Library.
+                        </p>
+                    </div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <span class="index">1995</span>
+                            <p>Fredrik Lundh, aka Effbot, releases the Python Imaging Library (PIL).</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="index">2010</span>
+                            <p>Jeffrey &lsquo;Alex&rsquo; Clark forks
+                               the project and renames it to Pillow to add setuptools support. A community of
+                               contributors soon joins in.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="index">2013</span>
+                            <p>Development of the original PIL has stopped, with no releases since
+                               2009. Pillow is adopted as its replacement in Linux distributions
+                               including Debian and Ubuntu.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="index">2020</span>
+                            <p>Following the <a href="https://peps.python.org/pep-0541/">PEP 541</a>
+                               package abandonment process, PyPI moderators
+                               <a href="https://github.com/python-pillow/Pillow/issues/1535#issuecomment-570308446">declare the original PIL package officially abandoned</a>,
+                               confirming Pillow as its de facto successor.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="index">Today</span>
+                            <p>Pillow is maintained by a global community of contributors and is a
+                               dependency of thousands of Python projects worldwide.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- In memory -->
+            <div class="memory">
+                <a href="https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html#fredrik-lundh">In memory of Fredrik Lundh</a>
+                <p class="memory-note">
+                    <a href="https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html">Pillow 9.0.0</a> was dedicated to the memory of Fredrik Lundh, aka Effbot, who died in
+                    November 2021. Fredrik created PIL in 1995 and was instrumental in the
+                    <a href="https://mail.python.org/archives/list/python-dev@python.org/thread/36Q5QBILL3QIFIA3KHNGFBNJQKXKN7SD/">early success of Python</a>.
+                </p>
             </div>
         </main>
-        <footer class="container-fluid pt-3 mt-4 border-top text-center">
-            <p>
-                &copy; 1995-2011 Fredrik Lundh and contributors. &copy; 2010-2024 Jeffrey A. Clark and
-                <a target="_blank"href="https://github.com/python-pillow/Pillow/graphs/contributors">contributors</a>.
-                Logo by Alastair Houghton. Psychedelic art by Jeremy Kun.
-            </p>
-            <p>
-                <a target="_blank" href="https://github.com/python-pillow/python-pillow.github.io">Source code</a>
-            </p>
+
+        <footer class="site-footer">
+            <div class="wrap footer-grid">
+                <div class="footer-brand">
+                    <a class="brand" href="/">
+                        <img src="assets/images/pillow-logo-light-text-120x60.png"
+                             width="120"
+                             height="60"
+                             alt="Pillow logo with text">
+                    </a>
+                    <p>The Python Imaging Library, maintained by a community of volunteers since 2010.</p>
+                    <div class="footer-social">
+                        <a class="icon-link" href="https://github.com/python-pillow/Pillow" aria-label="GitHub">
+                            <i class="fab fa-github" aria-hidden="true"></i></a>
+                        <a class="icon-link" href="https://fosstodon.org/@pillow" rel="me" aria-label="Mastodon">
+                            <i class="fab fa-mastodon" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Project</h4>
+                    <ul>
+                        <li><a href="https://pillow.readthedocs.io/">Documentation</a></li>
+                        <li><a href="https://pillow.readthedocs.io/en/stable/releasenotes/index.html">Release notes</a></li>
+                        <li><a href="https://github.com/python-pillow/Pillow">Source code</a></li>
+                        <li><a href="https://pypi.org/project/pillow/">PyPI package</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://github.com/python-pillow/Pillow/issues">GitHub issues</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/python-imaging-library">Stack Overflow</a></li>
+                        <li><a href="https://gitter.im/python-pillow/Pillow">Gitter</a></li>
+                        <li><a href="https://github.com/python-pillow/Pillow/graphs/contributors">Contributors</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-sponsor">
+                    <h4><i class="fas fa-heart" aria-hidden="true"></i> Support Pillow</h4>
+                    <p>Pillow is maintained by volunteers. Sponsorship funds security fixes, reviews and new features.</p>
+                    <a class="btn btn-sponsor btn-sm" href="https://github.com/sponsors/python-pillow">Become a Sponsor</a>
+                </div>
+            </div>
+            <div class="wrap footer-bottom">
+                <p>
+                    &copy; 1995-2011 Fredrik Lundh and contributors. &copy; 2010-2026 Jeffrey 'Alex' Clark and
+                    <a href="https://github.com/python-pillow/Pillow/graphs/contributors">contributors</a>.
+                    Logo by Alastair Houghton. Psychedelic art by Jeremy Kun.
+                </p>
+                <a href="https://github.com/python-pillow/python-pillow.github.io">Site source</a>
+            </div>
         </footer>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+        <a class="back-to-top" href="#top" aria-label="Back to top">
+            <i class="fas fa-arrow-up" aria-hidden="true"></i>
+        </a>
+
+        <script src="assets/js/back-to-top.js"></script>
     </body>
 </html>
