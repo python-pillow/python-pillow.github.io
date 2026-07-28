@@ -1,7 +1,7 @@
 Pillow Website
 ==============
 
-This website is live at `python-pillow.github.io <https://python-pillow.github.io/>`_.
+This website is hosted at `python-pillow.github.io <https://python-pillow.github.io/>`_.
 
 It's a static site — plain HTML, CSS, and a touch of vanilla JS, with no build
 step or framework. GitHub Pages serves it directly from the ``main`` branch.
