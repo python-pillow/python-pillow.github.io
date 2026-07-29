@@ -387,6 +387,69 @@ section {
     margin: 0;
 }
 
+/* ------------------------------------------------------------------ Team */
+
+.team {
+    background-color: var(--paper-dim);
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
+.team-card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.75rem 1.25rem;
+    text-align: center;
+    background-color: var(--paper);
+}
+
+.team-card .avatar {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background-color: var(--ink);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+.team-card h3 {
+    font-size: 1rem;
+    margin: 0 0 .25rem;
+}
+
+.team-card .role {
+    color: var(--ink-soft);
+    font-size: .85rem;
+    margin: 0 0 .75rem;
+}
+
+.team-card a {
+    font-size: .85rem;
+    color: var(--ink-soft);
+}
+
+.team-card a:hover {
+    color: var(--coral-dark);
+}
+
+.team-card a i {
+    margin-right: .3rem;
+}
+
+@media (max-width: 760px) {
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 /* ------------------------------------------------------------- History */
 
 .timeline {
@@ -399,7 +462,6 @@ section {
 .timeline-item {
     padding: 1.75rem 1.5rem 2rem;
     border-right: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
 }
 
 .timeline-item:first-child {
@@ -485,7 +547,7 @@ section {
 /* ------------------------------------------------------------ In memory */
 
 .memory {
-    padding: .5rem 1.5rem 2rem;
+    padding: 2.5rem 1.5rem 3rem;
     text-align: center;
     border-bottom: 1px solid var(--line);
 }
