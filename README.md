@@ -1,7 +1,6 @@
-# Pillow Website
+# Pillow website
 
-This website is hosted at [python-pillow.org](https://python-pillow.org/)
-(also reachable at [python-pillow.github.io](https://python-pillow.github.io/)).
+The Pillow website is hosted at [python-pillow.org](https://python-pillow.org/).
 
 It's a static site — plain HTML, CSS, and a touch of vanilla JS, with no build
 step or framework. GitHub Pages serves it directly from the `main` branch.
